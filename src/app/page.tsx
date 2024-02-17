@@ -1,9 +1,6 @@
 import Image from "next/image";
+import './globals.css'
 
 export default function Home() {
-  return (
-    <main className='bg-gray-500'>
-      Main
-    </main>
-  );
+  return <section>Main</section>
 }
