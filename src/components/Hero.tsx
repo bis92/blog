@@ -17,7 +17,7 @@ export default function Hero() {
       <h3 className='text-xl font-semibold'>Full-stack Eingineer</h3>
       <p>꿈을 코딩하는 사람, 드림코더 비스</p>
       <button className='bg-yellow-500 font-bold rounded-xl px-4 py-1 mt-2'>
-        <Link href='/about'>
+        <Link href='/contact'>
           Contact Me
         </Link>
       </button>

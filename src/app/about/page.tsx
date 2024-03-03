@@ -1,10 +1,13 @@
+import AboutMe from '@/components/AboutMe';
+import Hero from '@/components/Hero';
 import React from 'react';
 
-export default function page() {
+export default function AboutPage() {
   return (
-    <div>
-      about
-    </div>
+    <>
+      <Hero />
+      <AboutMe />
+    </>
   );
 }
 
