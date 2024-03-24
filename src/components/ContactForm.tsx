@@ -3,32 +3,66 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import Banner, { BannerData } from './Banner';
 
-type Form = {
+export type Form = {
   from: string;
   subject: string;
   message: string;
 } | HTMLFormElement
 
-export default function ContactForm() {
-  const [form, setForm] = useState<Form>({ 
-    from: '', 
-    subject: '', 
-    message: '' 
+const DEFAULT_DATA = { 
+  from: '', 
+  subject: '', 
+  message: '' 
+}
+
+export async function sendContactEmail(form: Form) {
+  // Nextjs app 폴더 내 api로 post 요청
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    body: JSON.stringify(form),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || '서버 요청에 실패함');
+  }
+  
+  return data;
+}
+
+export default function ContactForm() {
+  const [form, setForm] = useState<Form>(DEFAULT_DATA);
   const [banner, setBanner] = useState<BannerData | null>(null);
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
-    console.log(form);
-    setBanner({ message: '성공했어!!', state: 'success' });
-    setTimeout(() => {
-      setBanner(null);
-    }, 3000)
+    sendContactEmail(form)
+      .then(() => {
+        setBanner({
+          message: '메일을 성공적으로 보냈습니다',
+          state: 'success',
+        });
+        setForm(DEFAULT_DATA);
+      })
+      .catch(() => {
+        setBanner({
+          message: '메일 전송에 실패했습니다. 다시 시도해 주세요.',
+          state: 'error'
+        });
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setBanner(null);
+        }, 3000)
+      })
   }
   return <section className='w-full max-w-md'>
   { banner && <Banner banner={banner} />}
@@ -50,6 +84,7 @@ export default function ContactForm() {
         autoFocus 
         value={form.from} 
         onChange={onChange}  
+        className='text-black p-2'
       />
       <label 
         htmlFor='subject'
@@ -63,7 +98,8 @@ export default function ContactForm() {
         name='subject' 
         required
         value={form.subject} 
-        onChange={onChange}  
+        onChange={onChange}
+        className='text-black p-2'
       />
       <label 
         htmlFor='message'
@@ -78,7 +114,7 @@ export default function ContactForm() {
         required
         value={form.message} 
         onChange={onChange}
-        className='text-black'
+        className='text-black p-2'
       />
       <button
         className='text-black bg-yellow-300 font-bold hover:bg-yellow-400'
