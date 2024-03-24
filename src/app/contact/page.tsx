@@ -1,12 +1,18 @@
 import React from 'react';
 import { AiFillGithub, AiFillLinkedin, AiFillYoutube } from 'react-icons/ai';
 import ContactForm from '@/components/ContactForm';
+import { Metadata } from 'next';
 
 const LINKS = [
   { icon: <AiFillGithub />, url: '' },
   { icon: <AiFillLinkedin />, url: '' },
   { icon: <AiFillYoutube />, url: '' }
 ];
+
+export const metadata: Metadata = {
+  title: "Contact Me",
+  description: "비스에게 메일 보내기",
+};
 
 export default function ContactPage() {
   return <section className='flex flex-col items-center'>
